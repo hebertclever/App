@@ -111,3 +111,6 @@ tsconfig.tsbuildinfo
 # Yalc
 .yalc
 yalc.lock
+
+# Claude private docs (do not commit)
+.claude-*.md
