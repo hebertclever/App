@@ -1531,7 +1531,35 @@ function canEditReportAction(reportAction) {
  */
 function getTransactionsWithReceipts(iouReportID) {
     const allTransactions = TransactionUtils.getAllReportTransactions(iouReportID);
-    return _.filter(allTransactions, (transaction) => TransactionUtils.hasReceipt(transaction));
+    const reportActions = ReportActionsUtils.getAllReportActions(iouReportID);
+
+    // Filter out transactions that have been deleted/rejected
+    // A transaction is considered deleted if its corresponding report action has:
+    // 1. IOUTransactionID set to null, OR
+    // 2. isDeletedParentAction flag set to true
+    const activeTransactions = _.filter(allTransactions, (transaction) => {
+        if (!transaction || !transaction.transactionID) {
+            return false;
+        }
+
+        // Find the report action that links to this transaction
+        const linkedAction = _.find(reportActions, (action) => {
+            return action &&
+                   action.actionName === CONST.REPORT.ACTIONS.TYPE.IOU &&
+                   lodashGet(action, 'originalMessage.IOUTransactionID') === transaction.transactionID;
+        });
+
+        // If no linked action found, or if the action has been deleted, exclude this transaction
+        if (!linkedAction ||
+            lodashGet(linkedAction, 'originalMessage.IOUTransactionID') === null ||
+            ReportActionsUtils.isDeletedParentAction(linkedAction)) {
+            return false;
+        }
+
+        return true;
+    });
+
+    return _.filter(activeTransactions, (transaction) => TransactionUtils.hasReceipt(transaction));
 }
 
 /**
