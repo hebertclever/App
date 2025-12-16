@@ -56,10 +56,8 @@ function ImageView({isAuthTokenRequired = false, url, fileName, onError}: ImageV
 
     const isImageLoaded = imageSize.width > 0 && imageSize.height > 0;
     const imageLoadingStart = () => {
-        if (isImageLoaded) {
-            return;
-        }
-
+        // Always reset sizing/zoom state when a (re)load starts so cached images (notably on macOS Safari/Chrome)
+        // don't reuse stale dimensions when the modal is reopened.
         setImageSize({width: 0, height: 0});
         setIsLoading(true);
         setIsZoomed(false);
