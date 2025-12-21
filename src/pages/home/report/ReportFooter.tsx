@@ -74,6 +74,9 @@ type ReportFooterProps = {
 
     /** A method to call when the input is blur */
     onComposerBlur?: () => void;
+
+    /** Whether the report is rendered inside the side panel */
+    isInSidePanel?: boolean;
 };
 
 function ReportFooter({
@@ -87,6 +90,7 @@ function ReportFooter({
     onComposerFocus,
     reportTransactions,
     transactionThreadReportID,
+    isInSidePanel = false,
 }: ReportFooterProps) {
     const styles = useThemeStyles();
     const {isOffline} = useNetwork();
@@ -110,7 +114,8 @@ function ReportFooter({
     const ancestors = useAncestors(report);
     const isArchivedRoom = isArchivedNonExpenseReport(report, isReportArchived);
 
-    const isSmallSizeLayout = windowWidth - (shouldUseNarrowLayout ? 0 : variables.sideBarWithLHBWidth) < variables.anonymousReportFooterBreakpoint;
+    const isSmallSizeLayout =
+        isInSidePanel || windowWidth - (shouldUseNarrowLayout ? 0 : variables.sideBarWithLHBWidth) < variables.anonymousReportFooterBreakpoint;
 
     // If a user just signed in and is viewing a public report, optimistically show the composer while loading the report, since they will have write access when the response comes back.
     const shouldShowComposerOptimistically = !isAnonymousUser && isPublicRoom(report) && !!reportMetadata?.isLoadingInitialReportActions;
