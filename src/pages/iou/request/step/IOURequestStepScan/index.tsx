@@ -82,6 +82,7 @@ import type {ImageObject} from './cropImageToAspectRatio';
 import {getLocationPermission} from './LocationPermission';
 import NavigationAwareCamera from './NavigationAwareCamera/WebCamera';
 import ReceiptPreviews from './ReceiptPreviews';
+import shouldClearDraftTransactions from './shouldClearDraftTransactions';
 import type IOURequestStepScanProps from './types';
 import type {ReceiptFile} from './types';
 
@@ -649,7 +650,7 @@ function IOURequestStepScan({
             return;
         }
 
-        if (!isMultiScanEnabled) {
+        if (shouldClearDraftTransactions(isMultiScanEnabled, transactions.length)) {
             removeDraftTransactions(true);
         }
 
