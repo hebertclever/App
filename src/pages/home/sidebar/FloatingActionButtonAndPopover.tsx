@@ -28,13 +28,14 @@ import useResponsiveLayout from '@hooks/useResponsiveLayout';
 import useTheme from '@hooks/useTheme';
 import useThemeStyles from '@hooks/useThemeStyles';
 import useWindowDimensions from '@hooks/useWindowDimensions';
-import {startDistanceRequest, startMoneyRequest} from '@libs/actions/IOU';
+import {clearMoneyRequest, startDistanceRequest, startMoneyRequest} from '@libs/actions/IOU';
 import {openOldDotLink} from '@libs/actions/Link';
 import {navigateToQuickAction} from '@libs/actions/QuickActionNavigation';
 import {createNewReport, startNewChat} from '@libs/actions/Report';
 import {startTestDrive} from '@libs/actions/Tour';
 import getIconForAction from '@libs/getIconForAction';
 import interceptAnonymousUser from '@libs/interceptAnonymousUser';
+import {navigateToParticipantPage} from '@libs/IOUUtils';
 import isSearchTopmostFullScreenRoute from '@libs/Navigation/helpers/isSearchTopmostFullScreenRoute';
 import navigateAfterInteraction from '@libs/Navigation/navigateAfterInteraction';
 import Navigation from '@libs/Navigation/Navigation';
@@ -421,7 +422,8 @@ function FloatingActionButtonAndPopover({onHideCreateMenu, onShowCreateMenu, ref
                             setModalVisible(true);
                             return;
                         }
-                        startMoneyRequest(CONST.IOU.TYPE.CREATE, reportID, undefined, undefined, undefined, allTransactionDrafts);
+                        clearMoneyRequest(CONST.IOU.OPTIMISTIC_TRANSACTION_ID, false, allTransactionDrafts);
+                        navigateToParticipantPage(CONST.IOU.TYPE.CREATE, CONST.IOU.OPTIMISTIC_TRANSACTION_ID, reportID);
                     }),
                 sentryLabel: CONST.SENTRY_LABEL.FAB_MENU.CREATE_EXPENSE,
             },

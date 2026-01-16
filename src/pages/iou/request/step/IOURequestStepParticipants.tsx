@@ -101,6 +101,8 @@ function IOURequestStepParticipants({
     const iouRequestType = getRequestType(initialTransaction);
     const isSplitRequest = iouType === CONST.IOU.TYPE.SPLIT;
     const isMovingTransactionFromTrackExpense = isMovingTransactionFromTrackExpenseIOUUtils(action);
+    const shouldSelectDestinationBeforeUpload =
+        action === CONST.IOU.ACTION.CREATE && iouType === CONST.IOU.TYPE.CREATE && !initialTransaction?.iouRequestType && !initialTransaction?.receipt;
     const headerTitle = useMemo(() => {
         if (action === CONST.IOU.ACTION.CATEGORIZE) {
             return translate('iou.categorize');
@@ -314,6 +316,17 @@ function IOURequestStepParticipants({
     );
 
     const goToNextStep = useCallback(() => {
+        if (shouldSelectDestinationBeforeUpload) {
+            const destinationReportID = selectedReportID.current;
+            if (!destinationReportID || destinationReportID === reportID) {
+                return;
+            }
+
+            const destinationIouType = destinationReportID === selfDMReportID ? CONST.IOU.TYPE.TRACK : CONST.IOU.TYPE.SUBMIT;
+            Navigation.goBack(ROUTES.MONEY_REQUEST_CREATE.getRoute(CONST.IOU.ACTION.CREATE, destinationIouType, initialTransactionID, destinationReportID), {compareParams: false});
+            return;
+        }
+
         const isCategorizing = action === CONST.IOU.ACTION.CATEGORIZE;
         const isShareAction = action === CONST.IOU.ACTION.SHARE;
 
@@ -386,7 +399,21 @@ function IOURequestStepParticipants({
                 });
             }
         });
-    }, [action, participants, iouType, initialTransaction, transactions, initialTransactionID, reportID, waitForKeyboardDismiss, isMovingTransactionFromTrackExpense, backTo, introSelected]);
+    }, [
+        action,
+        participants,
+        iouType,
+        initialTransaction,
+        transactions,
+        initialTransactionID,
+        reportID,
+        waitForKeyboardDismiss,
+        isMovingTransactionFromTrackExpense,
+        backTo,
+        introSelected,
+        shouldSelectDestinationBeforeUpload,
+        selfDMReportID,
+    ]);
 
     const navigateBack = useCallback(() => {
         if (backTo) {
@@ -416,6 +443,10 @@ function IOURequestStepParticipants({
     }, [isFocused, action]);
 
     const isWorkspacesOnly = useMemo(() => {
+        if (shouldSelectDestinationBeforeUpload) {
+            return true;
+        }
+
         if (isDistanceRequest(initialTransaction)) {
             // For distance requests, only restrict to workspaces if a route exists and the distance is 0
             // If no route exists yet, the distance hasn't been calculated and we should allow P2P
@@ -425,7 +456,7 @@ function IOURequestStepParticipants({
             return initialTransaction?.comment?.customUnit?.quantity === 0;
         }
         return initialTransaction?.amount !== undefined && initialTransaction?.amount !== null && initialTransaction?.amount <= 0;
-    }, [initialTransaction]);
+    }, [initialTransaction, shouldSelectDestinationBeforeUpload]);
 
     return (
         <StepScreenWrapper
