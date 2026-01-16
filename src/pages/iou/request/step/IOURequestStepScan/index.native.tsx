@@ -632,7 +632,7 @@ function IOURequestStepScan({
             return;
         }
 
-        if (shouldClearDraftTransactions(isMultiScanEnabled, transactions.length)) {
+        if (shouldClearDraftTransactions(isMultiScanEnabled, backTo)) {
             removeDraftTransactions(true);
         }
 

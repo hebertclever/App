@@ -1,10 +1,9 @@
-function shouldClearDraftTransactions(isMultiScanEnabled: boolean, transactionCount: number): boolean {
+function shouldClearDraftTransactions(isMultiScanEnabled: boolean, backTo?: string): boolean {
     if (isMultiScanEnabled) {
         return false;
     }
 
-    return transactionCount <= 1;
+    return !backTo;
 }
 
 export default shouldClearDraftTransactions;
-
