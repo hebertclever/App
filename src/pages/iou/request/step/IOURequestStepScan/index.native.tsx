@@ -53,7 +53,7 @@ import {getManagerMcTestParticipant, getParticipantsOption, getReportOption} fro
 import {isPaidGroupPolicy} from '@libs/PolicyUtils';
 import {findSelfDMReportID, generateReportID, getPolicyExpenseChat, isArchivedReport, isPolicyExpenseChat} from '@libs/ReportUtils';
 import {shouldRestrictUserBillableActions} from '@libs/SubscriptionUtils';
-import {getDefaultTaxCode, shouldReuseInitialTransaction} from '@libs/TransactionUtils';
+import {getDefaultTaxCode, hasReceipt, shouldReuseInitialTransaction} from '@libs/TransactionUtils';
 import StepScreenWrapper from '@pages/iou/request/step/StepScreenWrapper';
 import withFullTransactionOrNotFound from '@pages/iou/request/step/withFullTransactionOrNotFound';
 import withWritableReportOrNotFound from '@pages/iou/request/step/withWritableReportOrNotFound';
@@ -114,6 +114,7 @@ function IOURequestStepScan({
     const camera = useRef<Camera>(null);
     const [flash, setFlash] = useState(false);
     const canUseMultiScan = isStartingScan && iouType !== CONST.IOU.TYPE.SPLIT;
+    const isReplacingReceipt = (isEditing && hasReceipt(initialTransaction)) || (!!initialTransaction?.receipt && !!backTo);
     const [startLocationPermissionFlow, setStartLocationPermissionFlow] = useState(false);
     const [receiptFiles, setReceiptFiles] = useState<ReceiptFile[]>([]);
     const [reportNameValuePairs] = useOnyx(`${ONYXKEYS.COLLECTION.REPORT_NAME_VALUE_PAIRS}${report?.reportID}`, {canBeMissing: true});
@@ -632,7 +633,7 @@ function IOURequestStepScan({
             return;
         }
 
-        if (shouldClearDraftTransactions(isMultiScanEnabled, backTo)) {
+        if (shouldClearDraftTransactions(isMultiScanEnabled, isReplacingReceipt)) {
             removeDraftTransactions(true);
         }
 

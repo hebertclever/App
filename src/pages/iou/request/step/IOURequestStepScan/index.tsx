@@ -650,7 +650,7 @@ function IOURequestStepScan({
             return;
         }
 
-        if (shouldClearDraftTransactions(isMultiScanEnabled, backTo)) {
+        if (shouldClearDraftTransactions(isMultiScanEnabled, isReplacingReceipt)) {
             removeDraftTransactions(true);
         }
 

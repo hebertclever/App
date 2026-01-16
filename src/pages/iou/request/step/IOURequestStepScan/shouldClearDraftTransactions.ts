@@ -1,9 +1,9 @@
-function shouldClearDraftTransactions(isMultiScanEnabled: boolean, backTo?: string): boolean {
+function shouldClearDraftTransactions(isMultiScanEnabled: boolean, isReplacingReceipt: boolean): boolean {
     if (isMultiScanEnabled) {
         return false;
     }
 
-    return !backTo;
+    return !isReplacingReceipt;
 }
 
 export default shouldClearDraftTransactions;
