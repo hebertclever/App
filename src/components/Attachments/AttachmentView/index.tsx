@@ -327,10 +327,13 @@ function AttachmentView({
             imageSource = SafeString(previewSource) || imageSource;
         }
 
+        const imageKey = `${attachmentID ?? 'attachment'}-${imageSource}`;
+
         return (
             <>
                 <View style={styles.imageModalImageCenterContainer}>
                     <AttachmentViewImage
+                        key={imageKey}
                         attachmentID={attachmentID}
                         url={imageSource}
                         file={file}
@@ -338,6 +341,7 @@ function AttachmentView({
                         loadComplete={loadComplete}
                         isImage={isImage}
                         onPress={onPress}
+                        isUsedInAttachmentModal={isUsedInAttachmentModal}
                         onError={() => {
                             if (isOffline) {
                                 return;

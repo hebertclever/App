@@ -13,11 +13,13 @@ type AttachmentViewImageProps = Pick<AttachmentViewProps, 'attachmentID' | 'isAu
 
     isImage: boolean;
 
+    isUsedInAttachmentModal?: boolean;
+
     /** Function for handle on error */
     onError?: () => void;
 };
 
-function AttachmentViewImage({attachmentID, url, file, isAuthTokenRequired, loadComplete, onPress, onError, isImage}: AttachmentViewImageProps) {
+function AttachmentViewImage({attachmentID, url, file, isAuthTokenRequired, loadComplete, onPress, onError, isImage, isUsedInAttachmentModal}: AttachmentViewImageProps) {
     const {translate} = useLocalize();
     const styles = useThemeStyles();
     const children = (
@@ -27,6 +29,7 @@ function AttachmentViewImage({attachmentID, url, file, isAuthTokenRequired, load
             url={url}
             fileName={file?.name ?? ''}
             isAuthTokenRequired={isImage && isAuthTokenRequired}
+            isUsedInAttachmentModal={isUsedInAttachmentModal}
         />
     );
 

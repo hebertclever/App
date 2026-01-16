@@ -28,15 +28,16 @@ function calculateZoomScale(containerSize: Dimensions, imageSize: Dimensions) {
 
 type ZoomDelta = {offsetX: number; offsetY: number};
 
-function ImageView({isAuthTokenRequired = false, url, fileName, onError}: ImageViewProps) {
+function ImageView({isAuthTokenRequired = false, url, fileName, onError, isUsedInAttachmentModal = false}: ImageViewProps) {
     const styles = useThemeStyles();
     const StyleUtils = useStyleUtils();
     const {isOffline} = useNetwork();
     const scrollableRef = useRef<View & HTMLDivElement>(null);
     const canUseTouchScreen = canUseTouchScreenUtil();
+    const shouldStartZoomed = isUsedInAttachmentModal;
 
     const [isLoading, setIsLoading] = useState(true);
-    const [isZoomed, setIsZoomed] = useState(false);
+    const [isZoomed, setIsZoomed] = useState(shouldStartZoomed);
     const [isDragging, setIsDragging] = useState(false);
     const [isMouseDown, setIsMouseDown] = useState(false);
     const [initialScrollLeft, setInitialScrollLeft] = useState(0);
@@ -56,13 +57,9 @@ function ImageView({isAuthTokenRequired = false, url, fileName, onError}: ImageV
 
     const isImageLoaded = imageSize.width > 0 && imageSize.height > 0;
     const imageLoadingStart = () => {
-        if (isImageLoaded) {
-            return;
-        }
-
         setImageSize({width: 0, height: 0});
         setIsLoading(true);
-        setIsZoomed(false);
+        setIsZoomed(shouldStartZoomed);
     };
 
     const imageLoad = ({nativeEvent: size}: ImageOnLoadEvent) => {
@@ -234,7 +231,7 @@ function ImageView({isAuthTokenRequired = false, url, fileName, onError}: ImageV
                     waitForSession={() => {
                         setImageSize({width: 0, height: 0});
                         setIsLoading(true);
-                        setIsZoomed(false);
+                        setIsZoomed(shouldStartZoomed);
                     }}
                     onError={onError}
                 />

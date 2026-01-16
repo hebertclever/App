@@ -6,6 +6,9 @@ type ImageViewProps = Pick<Attachment, 'attachmentID'> & {
     /** Whether source url requires authentication */
     isAuthTokenRequired?: boolean;
 
+    /** Whether the image view is used inside the attachment modal */
+    isUsedInAttachmentModal?: boolean;
+
     /** URL to full-sized image */
     url: string;
 
