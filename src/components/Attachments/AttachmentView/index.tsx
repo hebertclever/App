@@ -324,7 +324,11 @@ function AttachmentView({
                     </>
                 );
             }
-            imageSource = SafeString(previewSource) || imageSource;
+            // For extremely tall images, the server-generated preview (`.1024.jpg`) can end up extremely narrow (e.g. ~37px wide),
+            // which makes zooming unusable in the attachment modal. Prefer the original source in the modal.
+            if (!isUsedInAttachmentModal) {
+                imageSource = SafeString(previewSource) || imageSource;
+            }
         }
 
         const imageKey = `${attachmentID ?? 'attachment'}-${imageSource}`;
@@ -351,7 +355,7 @@ function AttachmentView({
                         }}
                     />
                 </View>
-                {isHighResolution && (
+                {isHighResolution && !isUsedInAttachmentModal && (
                     <View style={safeAreaPaddingBottomStyle}>
                         <HighResolutionInfo isUploaded={isUploaded} />
                     </View>

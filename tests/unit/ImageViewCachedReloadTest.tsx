@@ -90,6 +90,21 @@ describe('ImageView', () => {
         latestImageProps = undefined;
     });
 
+    it('starts zoomed when used in the attachment modal', () => {
+        render(
+            <ImageView
+                url="https://example.com/image.png"
+                fileName="image.png"
+                isAuthTokenRequired={false}
+                isUsedInAttachmentModal
+                onError={jest.fn()}
+            />,
+        );
+
+        expect(mockGetZoomSizingStyle).toHaveBeenCalled();
+        expect(mockGetZoomSizingStyle.mock.calls.some(([args]) => args.isZoomed === true)).toBe(true);
+    });
+
     it('resets imageSize when a cached image triggers onLoadStart again', async () => {
         render(
             <ImageView
